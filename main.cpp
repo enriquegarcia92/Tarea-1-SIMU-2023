@@ -1,27 +1,28 @@
 #include <iostream>
 
 using namespace std;
-void crear_matriz();
-void menu_principal();
-void menu_matriz();
+int** crear_matriz();
+void menu_principal(int menuoption);
+void menu_matriz(int menuoption);
+void imprimir_matriz(int **table, int rows, int columns);
 int main(){
-    
-    menu_principal();
+    int menuoption = 0;
+    menu_principal(0);
     return 0;
 }
 
-void menu_principal(){
-        int menuprin = 0;
-    while(menuprin!=3){
+void menu_principal(int menuoption){
+    int options = 0;
+    while(menuoption!=3){
         cout<<"Menú principal\n"
           "--------------\n"
           "1.nuevo\n"
           "2.abrir\n"
           "3.salir\n";
-    cin>>menuprin;
-    switch(menuprin){
+    cin>>menuoption;
+    switch(menuoption){
         case 1:
-        menu_matriz();
+        menu_matriz(options);
         break;
         case 2: cout<<"TODO\n";
         break;
@@ -30,10 +31,10 @@ void menu_principal(){
     }
 }
 
-void menu_matriz(){
-    int options = 0;
+void menu_matriz(int options){
         while(options!=11){
-            crear_matriz();
+            int **table = crear_matriz();
+            imprimir_matriz(table, 5, 5);
             cout<<"\nOpciones\n"
           "---------------------------\n"
           "1.Ingresar contenido\n"
@@ -76,29 +77,31 @@ void menu_matriz(){
 }
 }
 
-void crear_matriz(){
+int** crear_matriz(){
         int rows=5,columns=5;
-        string **table = new string*[rows];
+        int **table = new int*[rows];
         for(int i = 0; i < rows; i++){
-            table[i] = new string[columns];
+            table[i] = new int[columns];
         }
         
-        for(int i = 0; i < rows; i++){
+        return table;
+        /*for(int i = 0; i < rows; i++){
+            delete[] table[i];
+        }
+        delete[] table;
+        table = NULL;*/
+    }
+
+void imprimir_matriz(int **table, int rows, int columns){
+      for(int i = 0; i < rows; i++){
             for (int j = 0; j< columns; j++){
-                if(table[i][j]==""){
+                if(table[i][j]==0){
                     cout<<"___|";
                 }else{
                 cout<<table[i][j]<<"|";
                 }
             }
             cout<<endl;
-
         }
-        
-        for(int i = 0; i < rows; i++){
-            delete[] table[i];
-        }
-        delete[] table;
-        table = NULL;
-    }
+}
     
