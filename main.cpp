@@ -5,6 +5,7 @@ int** crear_matriz();
 void menu_principal(int menuoption);
 void menu_matriz(int menuoption);
 void imprimir_matriz(int **table, int rows, int columns);
+void insertar_en_matriz(int **table,int row,int column,int value);
 int main(){
     int menuoption = 0;
     menu_principal(0);
@@ -32,8 +33,8 @@ void menu_principal(int menuoption){
 }
 
 void menu_matriz(int options){
-        while(options!=11){
             int **table = crear_matriz();
+        while(options!=11){
             imprimir_matriz(table, 5, 5);
             cout<<"\nOpciones\n"
           "---------------------------\n"
@@ -50,7 +51,15 @@ void menu_matriz(int options){
           "11.Salir\n";
             cin>>options;
             switch(options){
-                case 1: cout<<"TODO\n";
+                case 1:
+                int row,column,value;
+                cout<<"Ingrese en que columna va a ingresar\n";
+                cin>>column;
+                cout<<"Ingrese en que fila va a ingresar\n";
+                cin>>row;
+                cout<<"Ingrese el valor a ingresar\n";
+                cin>>value;
+                insertar_en_matriz(table,row,column,value);
                 break;
                 case 2: cout<<"TODO\n";
                 break;
@@ -104,4 +113,9 @@ void imprimir_matriz(int **table, int rows, int columns){
             cout<<endl;
         }
 }
+
+void insertar_en_matriz(int **table,int row,int column,int value){
+    table[row][column] = value;
+}
+
     
