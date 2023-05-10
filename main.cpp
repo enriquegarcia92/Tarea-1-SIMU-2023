@@ -6,7 +6,7 @@ void menu_principal(int menuoption);
 void menu_matriz(int menuoption);
 void imprimir_matriz(int **table, int rows, int columns);
 void insertar_en_matriz(int **table,int row,int column,int value);
-void limpiar_matriz(int **table,int rows);
+void limpiar_matriz(int **table,int rows, int cols);
 int copiar_celda(int **table,int localrows,int localcols);
 void pegar_celda(int **table,int localrows,int localcols,int cellcopy);
 int cortar_celda(int **table,int localrows,int localcols);
@@ -38,9 +38,11 @@ void menu_principal(int menuoption){
 }
 
 void menu_matriz(int options){
-            int minrows=5,mincols=5;
-            int localrows=0,localcols=0;
-            int **table = crear_matriz(minrows,mincols);
+            int sizerows=5,sizecols=5;
+            int auxrow=sizerows-1;
+            int auxcols=sizecols-1;
+            int localrows=0,localcols=0,validrow=0,validcol=0;
+            int **table = crear_matriz(sizerows,sizecols);
             int cellcopy;
         while(options!=11){
             imprimir_matriz(table, 5, 5);
@@ -68,10 +70,16 @@ void menu_matriz(int options){
                 break;
                 case 2:
                 cout<<"Ingrese la fila a la que desea saltar\n";
-                cin>>localrows;
+                cin>>validrow;
                 cout<<"Ingrese la columna a la que desea saltar\n";
-                cin>>localcols;
-                cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";
+                cin>>validcol;
+                if(validrow>sizecols || validcol>sizerows || validcol<0 || validrow<0){
+                    cout<<"Posicion excede limites de la tabla\n";
+                }else{
+                    localrows = validrow;
+                    localcols = validcol;
+                    cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";
+                }
                 break;
                 case 3:
                 cellcopy = copiar_celda(table,localrows,localcols);
@@ -86,25 +94,49 @@ void menu_matriz(int options){
                 pegar_celda(table,localrows,localcols,cellcopy);
                 break;
                 case 6:
-                localcols--;
-                cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";
+                validcol=localcols;
+                validcol--;
+                if(validcol<=0 || validcol>=auxcols){
+                    cout<<"Posicion excede limites de la tabla\n";
+                }else{
+                    localcols = validcol;
+                    cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";
+                }
                 break;
                 case 7:
-                localcols++;
-                cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";
+                validcol=localcols;
+                validcol++;
+                if(validcol<=0 || validcol>=sizecols){
+                    cout<<"Posicion excede limites de la tabla\n";
+                }else{
+                    localcols = validcol;
+                    cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";
+                }
                 break;
                 case 8:
-                localrows--;
-                cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";
+                validrow=localrows;
+                validrow--;
+                if(validrow<=0 || validrow>=sizerows){
+                    cout<<"Posicion excede limites de la tabla\n";
+                }else{
+                    localrows = validrow;
+                    cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";
+                }
                 break;
                 case 9:
-                localrows++;
-                cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";
+                validrow=localrows;
+                validrow++;
+                if(validrow<=0 || validrow>=sizerows){
+                    cout<<"Posicion excede limites de la tabla\n";
+                }else{
+                    localrows = validrow;
+                    cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";
+                }
                 break;
                 case 10: cout<<"TODO\n";
                 break;
                 case 11:
-                limpiar_matriz(table, 5);
+                limpiar_matriz(table,sizerows, sizecols);
                 break;
                 default: cout<<"Entrada invalida\n";
             }
@@ -120,12 +152,14 @@ int** crear_matriz(int rows, int cols){
         return table;
     }
 
-void limpiar_matriz(int **table, int rows){
-    for(int i = 0; i < rows; i++){
-            delete[] table[i];
-        }
-        delete[] table;
-        table = NULL;
+void limpiar_matriz(int **table, int rows, int cols){
+    for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < cols; j++) {
+                        table[i][j] = NULL;
+                    }
+                }
+                delete [] table;
+                table = NULL;
 }
 
 
@@ -160,4 +194,3 @@ int cortar_celda(int **table,int localrows,int localcols){
     table[localrows][localcols]=NULL;
     return auxcut;
 }
-
