@@ -1,11 +1,16 @@
 #include <iostream>
 
 using namespace std;
-int** crear_matriz();
+int** crear_matriz(int rows, int cols);
 void menu_principal(int menuoption);
 void menu_matriz(int menuoption);
 void imprimir_matriz(int **table, int rows, int columns);
 void insertar_en_matriz(int **table,int row,int column,int value);
+void limpiar_matriz(int **table,int rows);
+int copiar_celda(int **table,int localrows,int localcols);
+void pegar_celda(int **table,int localrows,int localcols,int cellcopy);
+int cortar_celda(int **table,int localrows,int localcols);
+
 int main(){
     int menuoption = 0;
     menu_principal(0);
@@ -33,7 +38,10 @@ void menu_principal(int menuoption){
 }
 
 void menu_matriz(int options){
-            int **table = crear_matriz();
+            int minrows=5,mincols=5;
+            int localrows=0,localcols=0;
+            int **table = crear_matriz(minrows,mincols);
+            int cellcopy;
         while(options!=11){
             imprimir_matriz(table, 5, 5);
             cout<<"\nOpciones\n"
@@ -52,54 +60,74 @@ void menu_matriz(int options){
             cin>>options;
             switch(options){
                 case 1:
-                int row,column,value;
-                cout<<"Ingrese en que columna va a ingresar\n";
-                cin>>column;
-                cout<<"Ingrese en que fila va a ingresar\n";
-                cin>>row;
+                cout<<"Posicion actual: "<<localrows<<","<<localcols<<"\n";
+                int value;
                 cout<<"Ingrese el valor a ingresar\n";
                 cin>>value;
-                insertar_en_matriz(table,row,column,value);
+                insertar_en_matriz(table,localrows,localcols,value);
                 break;
-                case 2: cout<<"TODO\n";
+                case 2:
+                cout<<"Ingrese la fila a la que desea saltar\n";
+                cin>>localrows;
+                cout<<"Ingrese la columna a la que desea saltar\n";
+                cin>>localcols;
+                cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";
                 break;
-                case 3: cout<<"TODO\n";
+                case 3:
+                cellcopy = copiar_celda(table,localrows,localcols);
+                cout<<"Contendio copiado: "<<cellcopy<<"\n";
                 break;
-                case 4: cout<<"TODO\n";
+                case 4:
+                cellcopy = cortar_celda(table,localrows,localcols);
+                cout<<"Contendio cortado: "<<cellcopy<<"\n";
                 break;
-                case 5: cout<<"TODO\n";
+                case 5:
+                cout<<"Pegar contendio: "<<cellcopy<<"\n";
+                pegar_celda(table,localrows,localcols,cellcopy);
                 break;
-                case 6: cout<<"TODO\n";
+                case 6:
+                localcols--;
+                cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";
                 break;
-                case 7: cout<<"TODO\n";
+                case 7:
+                localcols++;
+                cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";
                 break;
-                case 8: cout<<"TODO\n";
+                case 8:
+                localrows--;
+                cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";
                 break;
-                case 9: cout<<"TODO\n";
+                case 9:
+                localrows++;
+                cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";
                 break;
                 case 10: cout<<"TODO\n";
                 break;
-                case 11: cout<<"TODO\n";
+                case 11:
+                limpiar_matriz(table, 5);
                 break;
                 default: cout<<"Entrada invalida\n";
             }
 }
 }
 
-int** crear_matriz(){
-        int rows=5,columns=5;
+int** crear_matriz(int rows, int cols){
         int **table = new int*[rows];
         for(int i = 0; i < rows; i++){
-            table[i] = new int[columns];
+            table[i] = new int[cols];
         }
         
         return table;
-        /*for(int i = 0; i < rows; i++){
+    }
+
+void limpiar_matriz(int **table, int rows){
+    for(int i = 0; i < rows; i++){
             delete[] table[i];
         }
         delete[] table;
-        table = NULL;*/
-    }
+        table = NULL;
+}
+
 
 void imprimir_matriz(int **table, int rows, int columns){
       for(int i = 0; i < rows; i++){
@@ -118,4 +146,18 @@ void insertar_en_matriz(int **table,int row,int column,int value){
     table[row][column] = value;
 }
 
-    
+int copiar_celda(int **table,int localrows,int localcols){
+    return table[localrows][localcols];
+}
+
+void pegar_celda(int **table,int localrows,int localcols,int cellcopy){
+        table[localrows][localcols] = cellcopy;
+}
+
+int cortar_celda(int **table,int localrows,int localcols){
+    int auxcut;
+    auxcut = table[localrows][localcols];
+    table[localrows][localcols]=NULL;
+    return auxcut;
+}
+
