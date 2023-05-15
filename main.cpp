@@ -1,16 +1,16 @@
 #include <iostream>
 
 using namespace std;
-int** crear_matriz(int rows, int cols);
+string** crear_matriz(int rows, int cols);
 void menu_principal(int menuoption);
 void menu_matriz(int menuoption);
-void imprimir_matriz(int **table, int rows, int columns);
-void copy_matrix(int** source, int** destination, int rows, int columns);
-void insertar_en_matriz(int **table,int row,int column,int value);
-void limpiar_matriz(int **table,int rows, int cols);
-int copiar_celda(int **table,int localrows,int localcols);
-void pegar_celda(int **table,int localrows,int localcols,int cellcopy);
-int cortar_celda(int **table,int localrows,int localcols);
+void imprimir_matriz(string **table, int rows, int columns);
+void copy_matrix(string** source, string** destination, int rows, int columns);
+void insertar_en_matriz(string **table,int row,int column,string value);
+void limpiar_matriz(string **table,int rows, int cols);
+string copiar_celda(string **table,int localrows,int localcols);
+void pegar_celda(string **table,int localrows,int localcols,string cellcopy);
+string cortar_celda(string **table,int localrows,int localcols);
 int letter_to_number(char letter);
 
 int main(){
@@ -42,8 +42,9 @@ void menu_principal(int menuoption){
 void menu_matriz(int options){
             int sizerows=5,sizecols=5; //variables que contienen dimensiones de la tabla
             int localrows=0,localcols=0,validrow=0,validcol=0;//Funciones que ocntienen la localización actual y auxiliares para validar que la entrada no exeda
-            int **table = crear_matriz(sizerows,sizecols); //Se crea la matriz de vectores
-            int cellcopy;//Variable que contiene el dato para las funciones de copiar,cortar,pegar
+            string **table = crear_matriz(sizerows,sizecols); //Se crea la matriz de vectores
+            string cellcopy;//Variable que contiene el dato para las funciones de copiar,cortar,pegar
+            string value;
         while(options!=11){
             imprimir_matriz(table, sizerows, sizecols);
             cout<<"\nOpciones\n"
@@ -63,19 +64,16 @@ void menu_matriz(int options){
             switch(options){
                 case 1:
                 cout<<"Posicion actual: "<<localrows<<","<<localcols<<"\n";
-                int value;
                 cout<<"Ingrese el valor a ingresar\n";
                 cin>>value;
                 if (localrows > 4 || localcols > 4){
                     //crear matriz nueva, copiar valores de la anterior, pegar en nueva matriz e insertar el valor
-                    int **expandedTable = crear_matriz(localrows, localcols);
+                    string **expandedTable = crear_matriz(localrows, localcols);
                     copy_matrix(table, expandedTable, sizerows, sizecols);
-                    for (int i = 0; i < 5; i++) {
-                        for (int j = 0; j < 5; j++) {
-                            table[i][j] = NULL;
-                        }
+                     for (int i = 0; i < sizerows; i++) {
+                        delete[] table[i];
                     }
-                delete [] table;
+                    delete[] table;
                 table = NULL;
                 table = expandedTable;            
                 imprimir_matriz(table, localrows, localcols);
@@ -170,16 +168,21 @@ void menu_matriz(int options){
 }
 }
 
-int** crear_matriz(int rows, int cols){ //función que crea el arreglo 2d o matríz
-        int **table = new int*[rows];
+string** crear_matriz(int rows, int cols){ //función que crea el arreglo 2d o matríz
+        string **table = new string*[rows];
         for(int i = 0; i < rows; i++){
-            table[i] = new int[cols];
+            table[i] = new string[cols];
         }
-        
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                table[i][0] = to_string(i);
+                table[0][j] = 'a' + j - 1;
+            }   
+        }
         return table; 
     }
 
-void copy_matrix(int** source, int** destination, int rows, int columns) {
+void copy_matrix(string** source, string** destination, int rows, int columns) {
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < columns; j++) {
       destination[i][j] = source[i][j];
@@ -187,21 +190,18 @@ void copy_matrix(int** source, int** destination, int rows, int columns) {
   }
 }
 
-void limpiar_matriz(int **table, int rows, int cols){ //funcón que la limpia
-    for (int i = 0; i < rows; i++) {
-                    for (int j = 0; j < cols; j++) {
-                        table[i][j] = NULL;
-                    }
-                }
-                delete [] table;
-                table = NULL;
+void limpiar_matriz(string **table, int rows, int cols){ //funcón que la limpia
+   for (int i = 0; i < rows; i++) {
+        delete[] table[i];
+    }
+            delete[] table;
 }
 
 
-void imprimir_matriz(int **table, int rows, int columns){//Función que imprime la matríz, si el contendio es 0 el formato que imprime es ___|___|___|
+void imprimir_matriz(string **table, int rows, int columns){//Función que imprime la matríz, si el contendio es 0 el formato que imprime es ___|___|___|
       for(int i = 0; i < rows; i++){
             for (int j = 0; j< columns; j++){
-                if(table[i][j]==0){
+                if(table[i][j]==""){
                     cout<<"___|";
                 }else{
                 cout<<table[i][j]<<"|";
@@ -211,22 +211,22 @@ void imprimir_matriz(int **table, int rows, int columns){//Función que imprime 
         }
 }
 
-void insertar_en_matriz(int **table,int row,int column,int value){ //Función que coloca el valor recivido en la posición designada
+void insertar_en_matriz(string **table,int row,int column,string value){ //Función que coloca el valor recivido en la posición designada
         table[row][column] = value;
 }
 
-int copiar_celda(int **table,int localrows,int localcols){ //Función que retorna el valor de la celda
+string copiar_celda(string **table,int localrows,int localcols){ //Función que retorna el valor de la celda
     return table[localrows][localcols];
 }
 
-void pegar_celda(int **table,int localrows,int localcols,int cellcopy){ //Función que inserta el valor almacenado en cellcopy a la celda
+void pegar_celda(string **table,int localrows,int localcols,string cellcopy){ //Función que inserta el valor almacenado en cellcopy a la celda
         table[localrows][localcols] = cellcopy;
 }
 
-int cortar_celda(int **table,int localrows,int localcols){ //Función que almacena el valor de la celda, limpia la celda y retorna el valor guardado
-    int auxcut;
+string cortar_celda(string **table,int localrows,int localcols){ //Función que almacena el valor de la celda, limpia la celda y retorna el valor guardado
+    string auxcut;
     auxcut = table[localrows][localcols];
-    table[localrows][localcols]=NULL;
+    table[localrows][localcols]="";
     return auxcut;
 }
 
