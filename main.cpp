@@ -5,11 +5,13 @@ int** crear_matriz(int rows, int cols);
 void menu_principal(int menuoption);
 void menu_matriz(int menuoption);
 void imprimir_matriz(int **table, int rows, int columns);
+void copy_matrix(int** source, int** destination, int rows, int columns);
 void insertar_en_matriz(int **table,int row,int column,int value);
 void limpiar_matriz(int **table,int rows, int cols);
 int copiar_celda(int **table,int localrows,int localcols);
 void pegar_celda(int **table,int localrows,int localcols,int cellcopy);
 int cortar_celda(int **table,int localrows,int localcols);
+int letter_to_number(char letter);
 
 int main(){
     int menuoption = 0;
@@ -43,7 +45,7 @@ void menu_matriz(int options){
             int **table = crear_matriz(sizerows,sizecols); //Se crea la matriz de vectores
             int cellcopy;//Variable que contiene el dato para las funciones de copiar,cortar,pegar
         while(options!=11){
-            imprimir_matriz(table, 5, 5);
+            imprimir_matriz(table, sizerows, sizecols);
             cout<<"\nOpciones\n"
           "---------------------------\n"
           "1.Ingresar contenido\n"
@@ -64,14 +66,41 @@ void menu_matriz(int options){
                 int value;
                 cout<<"Ingrese el valor a ingresar\n";
                 cin>>value;
-                insertar_en_matriz(table,localrows,localcols,value); //función de insertar valor en una matriz, esta recibe la dirección de la tabla, y la posición actual, y el valor
+                if (localrows > 4 || localcols > 4){
+                    //crear matriz nueva, copiar valores de la anterior, pegar en nueva matriz e insertar el valor
+                    int **expandedTable = crear_matriz(localrows, localcols);
+                    copy_matrix(table, expandedTable, sizerows, sizecols);
+                    for (int i = 0; i < 5; i++) {
+                        for (int j = 0; j < 5; j++) {
+                            table[i][j] = NULL;
+                        }
+                    }
+                delete [] table;
+                table = NULL;
+                table = expandedTable;            
+                imprimir_matriz(table, localrows, localcols);
+                sizerows=localrows;
+                sizecols=localcols;
+                if(localrows > 0 && localcols > 0){
+                    insertar_en_matriz(table, localrows-1, localcols-1, value);
+                }else if(localrows == 0 && localcols == 0){
+                   insertar_en_matriz(table, localrows, localcols, value);
+                   localrows = 1;
+                   localcols = 1;
+                }
+                
+                }else{
+                    insertar_en_matriz(table,localrows,localcols,value); //función de insertar valor en una matriz, esta recibe la dirección de la tabla, y la posición actual, y el valor
+                }
                 break;
                 case 2:
-                cout<<"Ingrese la fila a la que desea saltar\n";
-                cin>>validrow;
-                cout<<"Ingrese la columna a la que desea saltar\n";
+                cout<<"Ingrese la fila a la que desea saltar usando las letras a-z\n";
+                char rowLetter;
+                cin>>rowLetter;
+                validrow = letter_to_number(rowLetter);
+                cout<<"Ingrese la columna a la que desea saltar con su valor numerico\n";
                 cin>>validcol;
-                if(validrow>sizecols || validcol>sizerows || validcol<0 || validrow<0){//verifica que la entrada no exeda los límites de la tabla
+                if(validrow>25 || validcol>25 || validcol<1 || validrow<1){//verifica que la entrada no exeda los límites de la tabla
                     cout<<"Posicion excede limites de la tabla\n";
                 }else{
                     localrows = validrow;
@@ -94,7 +123,7 @@ void menu_matriz(int options){
                 case 6:
                 validcol=localcols;
                 validcol--;
-                if(validcol<=0 || validcol>=auxcols){
+                if(validcol<=0 || validcol>=sizecols){
                     cout<<"Posicion excede limites de la tabla\n";
                 }else{
                     localcols = validcol;
@@ -150,6 +179,14 @@ int** crear_matriz(int rows, int cols){ //función que crea el arreglo 2d o matr
         return table; 
     }
 
+void copy_matrix(int** source, int** destination, int rows, int columns) {
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < columns; j++) {
+      destination[i][j] = source[i][j];
+    }
+  }
+}
+
 void limpiar_matriz(int **table, int rows, int cols){ //funcón que la limpia
     for (int i = 0; i < rows; i++) {
                     for (int j = 0; j < cols; j++) {
@@ -175,7 +212,7 @@ void imprimir_matriz(int **table, int rows, int columns){//Función que imprime 
 }
 
 void insertar_en_matriz(int **table,int row,int column,int value){ //Función que coloca el valor recivido en la posición designada
-    table[row][column] = value;
+        table[row][column] = value;
 }
 
 int copiar_celda(int **table,int localrows,int localcols){ //Función que retorna el valor de la celda
@@ -191,4 +228,12 @@ int cortar_celda(int **table,int localrows,int localcols){ //Función que almace
     auxcut = table[localrows][localcols];
     table[localrows][localcols]=NULL;
     return auxcut;
+}
+
+int letter_to_number(char letter) {
+  // Subtract 'a' from the letter to get its ASCII code.
+  int ascii_code = letter - 'a'+1;
+
+  // Return the ASCII code modulo 26, which will be the number from 0 to 25.
+  return ascii_code % 26;
 }
