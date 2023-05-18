@@ -40,11 +40,12 @@ void menu_principal(int menuoption){
 }
 
 void menu_matriz(int options){
-            int sizerows=5,sizecols=5; //variables que contienen dimensiones de la tabla
-            int localrows=0,localcols=0,validrow=0,validcol=0;//Funciones que ocntienen la localización actual y auxiliares para validar que la entrada no exeda
+            int sizerows=6,sizecols=6; //variables que contienen dimensiones de la tabla
+            int localrows=1,localcols=1,validrow=0,validcol=0;//Funciones que ocntienen la localización actual y auxiliares para validar que la entrada no exeda
             string **table = crear_matriz(sizerows,sizecols); //Se crea la matriz de vectores
             string cellcopy;//Variable que contiene el dato para las funciones de copiar,cortar,pegar
             string value;
+            char colLetter='a';
         while(options!=11){
             imprimir_matriz(table, sizerows, sizecols);
             cout<<"\nOpciones\n"
@@ -63,10 +64,10 @@ void menu_matriz(int options){
             cin>>options;
             switch(options){
                 case 1:
-                cout<<"Posicion actual: "<<localrows<<","<<localcols<<"\n";
+                cout<<"Posicion actual: "<<colLetter<<","<<localrows<<"\n";
                 cout<<"Ingrese el valor a ingresar\n";
                 cin>>value;
-                if (localrows > 4 || localcols > 4){
+                if (localrows > 5 || localcols > 5){
                     //crear matriz nueva, copiar valores de la anterior, pegar en nueva matriz e insertar el valor
                     string **expandedTable = crear_matriz(localrows, localcols);
                     copy_matrix(table, expandedTable, sizerows, sizecols);
@@ -76,7 +77,6 @@ void menu_matriz(int options){
                     delete[] table;
                 table = NULL;
                 table = expandedTable;            
-                imprimir_matriz(table, localrows, localcols);
                 sizerows=localrows;
                 sizecols=localcols;
                 if(localrows > 0 && localcols > 0){
@@ -93,17 +93,16 @@ void menu_matriz(int options){
                 break;
                 case 2:
                 cout<<"Ingrese la fila a la que desea saltar usando las letras a-z\n";
-                char rowLetter;
-                cin>>rowLetter;
-                validrow = letter_to_number(rowLetter);
+                cin>>colLetter;
+                validcol = letter_to_number(colLetter);
                 cout<<"Ingrese la columna a la que desea saltar con su valor numerico\n";
-                cin>>validcol;
+                cin>>validrow;
                 if(validrow>25 || validcol>25 || validcol<1 || validrow<1){//verifica que la entrada no exeda los límites de la tabla
                     cout<<"Posicion excede limites de la tabla\n";
                 }else{
                     localrows = validrow;
                     localcols = validcol;//Módifica el valor de las variables que contienen la localización
-                    cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";
+                    cout<<"Nueva posicion: "<<colLetter<<","<<localrows<<"\n";
                 }
                 break;
                 case 3:
@@ -125,7 +124,7 @@ void menu_matriz(int options){
                     cout<<"Posicion excede limites de la tabla\n";
                 }else{
                     localcols = validcol;
-                    cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n"; //Porción de código que disminuye en 1 las columnas y revisa que no exeda los limites de la tabla
+                    cout<<"Nueva posicion: "<<colLetter<<","<<localrows<<"\n"; //Porción de código que disminuye en 1 las columnas y revisa que no exeda los limites de la tabla
                 }
                 break;
                 case 7:
@@ -135,7 +134,7 @@ void menu_matriz(int options){
                     cout<<"Posicion excede limites de la tabla\n";
                 }else{
                     localcols = validcol;
-                    cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";//Porción de código que aumenta en 1 las columnas y revisa que no exeda los limites de la tabla
+                    cout<<"Nueva posicion: "<<colLetter<<","<<localrows<<"\n";//Porción de código que aumenta en 1 las columnas y revisa que no exeda los limites de la tabla
                 }
                 break;
                 case 8:
@@ -145,7 +144,7 @@ void menu_matriz(int options){
                     cout<<"Posicion excede limites de la tabla\n";
                 }else{
                     localrows = validrow;
-                    cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";//Porción de código que disminuye en 1 las filas y revisa que no exeda los limites de la tabla
+                    cout<<"Nueva posicion: "<<colLetter<<","<<localrows<<"\n";//Porción de código que disminuye en 1 las filas y revisa que no exeda los limites de la tabla
                 }
                 break;
                 case 9:
@@ -155,7 +154,7 @@ void menu_matriz(int options){
                     cout<<"Posicion excede limites de la tabla\n";
                 }else{
                     localrows = validrow;
-                    cout<<"Nueva posicion: "<<localrows<<","<<localcols<<"\n";//Porción de código que aumenta en 1 las filas y revisa que no exeda los limites de la tabla
+                    cout<<"Nueva posicion: "<<colLetter<<","<<localrows<<"\n";//Porción de código que aumenta en 1 las filas y revisa que no exeda los limites de la tabla
                 }
                 break;
                 case 10: cout<<"TODO\n";
@@ -202,9 +201,12 @@ void imprimir_matriz(string **table, int rows, int columns){//Función que impri
       for(int i = 0; i < rows; i++){
             for (int j = 0; j< columns; j++){
                 if(table[i][j]==""){
-                    cout<<"___|";
+                    cout<<"________|";
                 }else{
-                cout<<table[i][j]<<"|";
+                for (int k = 0; k < 8 - table[i][j].length(); k++) {
+                    cout << " ";
+                }    
+                cout << table[i][j] << "|";
                 }
             }
             cout<<endl;
