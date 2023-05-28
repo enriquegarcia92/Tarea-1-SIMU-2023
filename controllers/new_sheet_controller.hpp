@@ -131,7 +131,7 @@ void menu_matriz(int options)
                 mover_abajo();
                 break;
             case 10:
-                // TODO
+                guardar();
                 break;
             case 11:
                 limpiar_spreadsheet();
@@ -148,7 +148,7 @@ void menu_matriz(int options)
 // 1. Función que inserta contenido en una celda
 void insertar_contenido()
 {
-    string value;
+    string value = "";
     bool error = true;
 
     do
@@ -422,39 +422,46 @@ void limpiar_spreadsheet()
 }
 
 // 10. Función para guardar el contenido de la hoja de calculo en un archivo JSON
-/*void guardar()
+void guardar()
 {
     cout << "\nIngrese el nombre del archivo: ";
     cin >> filename;
 
-    for (int i = 1; i < sizerows; i++)
+    MainListNode *auxRow = mainList->next;
+    Cell *auxCell;
+
+    for(int i = 1; i < num_rows; i++)
     {
         cadena = cadena + "\"" + to_string(i) + "\":";
 
-        for (int j = 1; j < sizecols; j++)
+        auxCell = auxRow->row->next;
+
+        for(int j = 1; j < num_columns; j++)
         {
             if (j == 1)
                 cadena = cadena + " [";
 
-            if (j == sizecols - 1)
+            if (j == num_columns - 1)
             {
-                cadena = cadena + "\"" + table[i][j] + "\"]";
+                cadena = cadena + "\"" + auxCell->value + "\"]";
             }
             else
             {
-                cadena = cadena + "\"" + table[i][j] + "\",";
+                cadena = cadena + "\"" + auxCell->value + "\",";
             }
+
+            auxCell = auxCell->next;
         }
 
-        if (i != sizerows - 1)
+        auxRow = auxRow->next;
+
+        if (i != num_rows - 1)
             cadena = cadena + ", ";
     }
 
     cadena = cadena + "}";
 
-    obj.parse(cadena);
-
-    if (obj.saveToFile(filename + ".json"))
+    if (save_file(cadena, filename + ".json"))
     {
         cout << "\nARCHIVO GUARDADO EXITOSAMENTE\n";
     }
@@ -467,4 +474,4 @@ void limpiar_spreadsheet()
     opc = getche();
 
     cadena = "{";
-}*/
+}

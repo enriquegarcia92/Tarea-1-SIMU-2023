@@ -1,17 +1,21 @@
 #include <iostream>
+#include <string>
+#include <fstream>
 #include "../utils/utils.hpp"
 
 using namespace std;
 
 // Nodo de las celdas de la hoja de cálculo
-struct Cell{
+struct Cell
+{
     string value;
     Cell *prev;
     Cell *next;
 };
 
 // Nodo de la lista principal que nos permite acceder a las filas
-struct MainListNode{
+struct MainListNode
+{
     Cell *row;
     string value;
     MainListNode *prev;
@@ -23,8 +27,8 @@ void agregar_fila(MainListNode *&list, int index_row, int num_columns, char asci
 void agregar_columna(Cell *&list, int index_row, int index_colum, char ascii_code_first_letter);
 void crear_hoja_calculo(MainListNode *&list, int num_rows, int num_columns, char ascii_code_first_letter);
 void imprimir_hoja_calculo(MainListNode *&list, int num_rows, int num_columns, int actual_row, int actual_column);
-void escribir_contenido(MainListNode *&list, int actual_row, int actual_col, string data);
-
+void escribir_contenido(MainListNode *&list, int actual_row, int actual_col, std::string data);
+bool save_file(std::string data, std::string filename);
 
 // Función para agregar una nueva fila a la hoja de cálculo
 void agregar_fila(MainListNode *&list, int index_row, int num_columns, char ascii_code_first_letter)
@@ -33,10 +37,10 @@ void agregar_fila(MainListNode *&list, int index_row, int num_columns, char asci
 
     Cell *new_cell = new Cell();
 
-    for(int j = 0; j < num_columns; j++)
+    for (int j = 0; j < num_columns; j++)
         agregar_columna(new_cell, index_row, j, ascii_code_first_letter);
-    
-    if(index_row == 0)
+
+    if (index_row == 0)
         new_node->value = "";
     else
         new_node->value = to_string(index_row);
@@ -45,7 +49,7 @@ void agregar_fila(MainListNode *&list, int index_row, int num_columns, char asci
     new_node->prev = NULL;
     new_node->next = NULL;
 
-    if(list == NULL)
+    if (list == NULL)
     {
         list = new_node;
     }
@@ -59,7 +63,7 @@ void agregar_fila(MainListNode *&list, int index_row, int num_columns, char asci
             aux2 = aux1;
             aux1 = aux1->next;
         }
-        
+
         aux2->next = new_node;
         new_node->prev = aux2;
     }
@@ -70,7 +74,7 @@ void agregar_columna(Cell *&list, int index_row, int index_colum, char ascii_cod
 {
     Cell *new_cell = new Cell();
 
-    if(index_row == 0)
+    if (index_row == 0)
         new_cell->value = (int)ascii_code_first_letter + index_colum;
     else
         new_cell->value = "";
@@ -78,7 +82,7 @@ void agregar_columna(Cell *&list, int index_row, int index_colum, char ascii_cod
     new_cell->prev = NULL;
     new_cell->next = NULL;
 
-    if(list == NULL)
+    if (list == NULL)
     {
         list = new_cell;
     }
@@ -87,7 +91,7 @@ void agregar_columna(Cell *&list, int index_row, int index_colum, char ascii_cod
         Cell *aux1 = list;
         Cell *aux2 = NULL;
 
-        while(aux1 != NULL)
+        while (aux1 != NULL)
         {
             aux2 = aux1;
             aux1 = aux1->next;
@@ -101,7 +105,7 @@ void agregar_columna(Cell *&list, int index_row, int index_colum, char ascii_cod
 // Función para crear una nueva hoja de cálculo
 void crear_hoja_calculo(MainListNode *&list, int num_rows, int num_columns, char ascii_code_first_letter)
 {
-    for(int i = 0; i < num_rows; i++)
+    for (int i = 0; i < num_rows; i++)
         agregar_fila(list, i, num_columns, ascii_code_first_letter);
 }
 
@@ -113,25 +117,29 @@ void imprimir_hoja_calculo(MainListNode *&list, int num_rows, int num_columns, i
 
     cout << "\n";
 
-    for(int i = 0; i < num_rows; i++)
+    for (int i = 0; i < num_rows; i++)
     {
         cell = row->row;
 
-        for(int j = 0; j < num_columns; j++)
+        for (int j = 0; j < num_columns; j++)
         {
-            if(j == 0){
-                if(row->value == "")
+            if (j == 0)
+            {
+                if (row->value == "")
                 {
                     relleno(9);
                     cout << "|";
-                }                  
+                }
                 else
                 {
                     relleno(9 - (row->value).length());
                     cout << row->value << "|";
                 }
-            }else{
-                if(i == actual_row && j == actual_column){
+            }
+            else
+            {
+                if (i == actual_row && j == actual_column)
+                {
                     if (cell->value == "")
                     {
                         relleno(4);
@@ -144,8 +152,10 @@ void imprimir_hoja_calculo(MainListNode *&list, int num_rows, int num_columns, i
                         relleno(9 - (cell->value).length());
                         cout << cell->value << "|";
                     }
-                }else{
-                    if(cell->value == "")
+                }
+                else
+                {
+                    if (cell->value == "")
                     {
                         relleno(9);
                         cout << "|";
@@ -156,18 +166,18 @@ void imprimir_hoja_calculo(MainListNode *&list, int num_rows, int num_columns, i
                         cout << cell->value << "|";
                     }
                 }
-            }         
-            cell = cell->next;           
+            }
+            cell = cell->next;
         }
-    
-        row = row->next;
-        cout<<"\n";
 
-        for(int j = 0; j < num_columns; j++)
-            cout << "---------|";
-        
+        row = row->next;
         cout << "\n";
-    } 
+
+        for (int j = 0; j < num_columns; j++)
+            cout << "---------|";
+
+        cout << "\n";
+    }
 }
 
 // Función para escribir en una celda de la hoja de cálculo
@@ -175,10 +185,10 @@ void escribir_contenido(MainListNode *&list, int actual_row, int actual_col, str
 {
     MainListNode *row = list;
     Cell *cell;
-    
-    for(int i = 0; i <= actual_row; i++)
+
+    for (int i = 0; i <= actual_row; i++)
     {
-        if(i != actual_row)
+        if (i != actual_row)
         {
             row = row->next;
         }
@@ -186,8 +196,9 @@ void escribir_contenido(MainListNode *&list, int actual_row, int actual_col, str
         {
             cell = row->row;
 
-            for(int j = 0; i <= actual_col; j++){
-                if(j != actual_col)
+            for (int j = 0; i <= actual_col; j++)
+            {
+                if (j != actual_col)
                 {
                     cell = cell->next;
                 }
@@ -229,7 +240,7 @@ int contar_columnas(Cell *&list)
         aux = aux->next;
     }
 
-    return contador;  
+    return contador;
 }
 
 // Función para copiar el contenido de una celda
@@ -238,10 +249,10 @@ string copiar_celda(MainListNode *&list, int actual_row, int actual_col)
     MainListNode *row = list;
     Cell *cell;
     string data;
-    
-    for(int i = 0; i <= actual_row; i++)
+
+    for (int i = 0; i <= actual_row; i++)
     {
-        if(i != actual_row)
+        if (i != actual_row)
         {
             row = row->next;
         }
@@ -249,8 +260,9 @@ string copiar_celda(MainListNode *&list, int actual_row, int actual_col)
         {
             cell = row->row;
 
-            for(int j = 0; i <= actual_col; j++){
-                if(j != actual_col)
+            for (int j = 0; i <= actual_col; j++)
+            {
+                if (j != actual_col)
                 {
                     cell = cell->next;
                 }
@@ -273,10 +285,10 @@ string cortar_celda(MainListNode *&list, int actual_row, int actual_col)
     MainListNode *row = list;
     Cell *cell;
     string data;
-    
-    for(int i = 0; i <= actual_row; i++)
+
+    for (int i = 0; i <= actual_row; i++)
     {
-        if(i != actual_row)
+        if (i != actual_row)
         {
             row = row->next;
         }
@@ -284,8 +296,9 @@ string cortar_celda(MainListNode *&list, int actual_row, int actual_col)
         {
             cell = row->row;
 
-            for(int j = 0; i <= actual_col; j++){
-                if(j != actual_col)
+            for (int j = 0; i <= actual_col; j++)
+            {
+                if (j != actual_col)
                 {
                     cell = cell->next;
                 }
@@ -304,7 +317,7 @@ string cortar_celda(MainListNode *&list, int actual_row, int actual_col)
 }
 
 // Función para eliminar la hoja de cálculo y vaciar las celdas de memoria ocupadas
-void vaciar(MainListNode** nodoInicio)
+void vaciar(MainListNode **nodoInicio)
 {
     MainListNode *current = *nodoInicio;
     MainListNode *next;
@@ -312,8 +325,29 @@ void vaciar(MainListNode** nodoInicio)
     while (current != NULL)
     {
         next = current->next;
-        delete(current);
+        delete (current);
         current = next;
     }
     *nodoInicio = NULL;
+}
+
+// Función para guardar la matriz en un archivo json
+bool save_file(std::string data, std::string filename)
+{
+    filename = "files/" + filename;
+
+    std::ofstream file(filename, std::ios::binary);
+
+    if (!file.is_open())
+    {
+        return false;
+    }
+
+    for (uint32_t i = 0; i < data.size(); ++i)
+    {
+        char c = data[i];
+        file.write(&c, sizeof(char));
+    }
+
+    return true;
 }
