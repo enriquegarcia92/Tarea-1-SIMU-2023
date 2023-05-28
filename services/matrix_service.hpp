@@ -105,8 +105,6 @@ void agregar_columna(Cell *&list, int index_row, int index_colum, char ascii_cod
 // Función para crear una nueva hoja de cálculo
 void crear_hoja_calculo(MainListNode *&list, int num_rows, int num_columns, char ascii_code_first_letter)
 {
-    cout << num_columns;
-
     for (int i = 0; i < num_rows; i++)
         agregar_fila(list, i, num_columns, ascii_code_first_letter);
 }
@@ -214,6 +212,7 @@ void escribir_contenido(MainListNode *&list, int actual_row, int actual_col, str
         }
     }
 }
+
 
 // Función para saber el número de filas de la hoja de cálculo
 int contar_filas(MainListNode *&list)

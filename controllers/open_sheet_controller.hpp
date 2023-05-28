@@ -13,17 +13,17 @@ int index_archivo = 0;
 
 void menu_archivos()
 {
-    // validamos si ya existe alguna hoja de calculo guardada previamente
-    if (contar_archivos() > 0)
+    do
     {
-        // creamos la lista donde se almacenara el nombre de los archivos guardados
-        File *file_list = NULL;
+        // validamos si ya existe alguna hoja de calculo guardada previamente
+        if (contar_archivos() > 0)
+        {
+            // creamos la lista donde se almacenara el nombre de los archivos guardados
+            File *file_list = NULL;
 
-        // llenamos la lista con los nombres de los archivos
-        recuperar_archivos(file_list);
+            // llenamos la lista con los nombres de los archivos
+            recuperar_archivos(file_list);
 
-        do
-        {           
             // imprimimos en pantalla el nombre de los archivos
             cout << "\n------------------------------------\n";
             cout << "ARCHIVOS GUARDADOS: \n";
@@ -43,11 +43,11 @@ void menu_archivos()
             }
             else
             {
-                if(index_archivo != 0)
+                if (index_archivo != 0)
                 {
                     string file_name = extraer_nombre_archivo(file_list, index_archivo);
 
-                    if(file_name != "")
+                    if (file_name != "")
                     {
                         JSON obj;
 
@@ -67,10 +67,11 @@ void menu_archivos()
                         // variable que nos servirá para obtener la cantidad de elementos de cada fila
                         int contador_columnas = 0;
 
-                        for(int i = 0; i < objeto_inicial.length(); i++){
+                        for (int i = 0; i < objeto_inicial.length(); i++)
+                        {
                             // encontramos la cantidad de "comas" en el arreglo
                             // la cantidad de elementos será cantidad_de_comas + 1
-                            if(objeto_inicial[i] == ',')
+                            if (objeto_inicial[i] == ',')
                                 contador_columnas++;
                         }
 
@@ -79,7 +80,7 @@ void menu_archivos()
                         // obtenemos la cantidad de filas del archivo
                         int contador_filas = 0;
 
-                        for(auto it = obj.begin(); it != obj.end(); ++it)
+                        for (auto it = obj.begin(); it != obj.end(); ++it)
                         {
                             contador_filas++;
                         }
@@ -94,25 +95,25 @@ void menu_archivos()
                         int actual_row = 1;
                         string valores[num_columns];
 
-                        for(auto it = obj.begin(); it != obj.end(); ++it)
+                        for (auto it = obj.begin(); it != obj.end(); ++it)
                         {
-                            //it.key() devuelve la clave del valor actual del iterador.
+                            // it.key() devuelve la clave del valor actual del iterador.
                             fila = it->toString();
 
-                            for(int i = 0; i < fila.length(); i++)
+                            for (int i = 0; i < fila.length(); i++)
                             {
-                                if(fila[i] == '[' || fila[i] == ']' || fila[i] == 32)
+                                if (fila[i] == '[' || fila[i] == ']' || fila[i] == 32)
                                 {
-                                    fila.erase(i, 1);                                 
+                                    fila.erase(i, 1);
                                 }
                             }
-                            
-                            for(int j = 0; j < contador_columnas; j++)
+
+                            for (int j = 0; j <= contador_columnas; j++)
                             {
                                 escribir_contenido(mainList, actual_row, j, "hola");
                             }
 
-                            actual_row++;                               
+                            actual_row++;
                         }
 
                         cout << contador_columnas << endl;
@@ -124,14 +125,15 @@ void menu_archivos()
                         imprimir_mensaje_confirmacion();
                         opc = getche();
                     }
-                }             
+                }
             }
-        }while(index_archivo != 0);     
-    }
-    else
-    {
-        cout << "No se encontro ningun archivo\n";
-        imprimir_mensaje_confirmacion();
-        opc = getche();
-    }
+        }
+        else
+        {
+            cout << "No se encontro ningun archivo\n";
+            index_archivo = 0;
+            imprimir_mensaje_confirmacion();
+            opc = getche();
+        }
+    } while (index_archivo != 0);
 }

@@ -80,7 +80,7 @@ void menu_matriz_open_sheet(MainListNode *&list, int options, int rows, int colu
 {
     mainList = list;
     num_rows = rows;
-    num_columns = columns;
+    num_columns = columns + 1;
 
     menu_operaciones(options);
 }
