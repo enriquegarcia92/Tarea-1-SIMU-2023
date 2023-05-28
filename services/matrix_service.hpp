@@ -105,6 +105,8 @@ void agregar_columna(Cell *&list, int index_row, int index_colum, char ascii_cod
 // Función para crear una nueva hoja de cálculo
 void crear_hoja_calculo(MainListNode *&list, int num_rows, int num_columns, char ascii_code_first_letter)
 {
+    cout << num_columns;
+
     for (int i = 0; i < num_rows; i++)
         agregar_fila(list, i, num_columns, ascii_code_first_letter);
 }
@@ -334,7 +336,11 @@ void vaciar(MainListNode **nodoInicio)
 // Función para guardar la matriz en un archivo json
 bool save_file(std::string data, std::string filename)
 {
-    filename = "files/" + filename;
+    int cantidad_archivos = contar_archivos();
+
+    cantidad_archivos += 1;
+
+    filename = "files/" + to_string(cantidad_archivos) + ". " + filename;
 
     std::ofstream file(filename, std::ios::binary);
 

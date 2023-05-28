@@ -63,6 +63,7 @@ void mover_arriba();
 void mover_abajo();
 void guardar();
 void limpiar_spreadsheet();
+void menu_operaciones(int options);
 
 void menu_matriz(int options)
 {
@@ -72,6 +73,20 @@ void menu_matriz(int options)
     num_rows = contar_filas(mainList);
     num_columns = contar_columnas(mainList->row);
 
+    menu_operaciones(options);
+}
+
+void menu_matriz_open_sheet(MainListNode *&list, int options, int rows, int columns)
+{
+    mainList = list;
+    num_rows = rows;
+    num_columns = columns;
+
+    menu_operaciones(options);
+}
+
+void menu_operaciones(int options)
+{
     while (options != 11)
     {
         imprimir_hoja_calculo(mainList, num_rows, num_columns, index_actual_row, index_actual_col);
